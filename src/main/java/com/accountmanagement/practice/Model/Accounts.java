@@ -20,10 +20,6 @@ public class Accounts {
 	@Column(name = "balance")
 	private int balance;
 
-//	public int getId() {
-//		return id;
-//	}
-
 	public String getName() {
 		return name;
 	}
