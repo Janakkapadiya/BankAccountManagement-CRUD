@@ -1,35 +1,34 @@
 package com.accountmanagement.practice.Model;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import javax.persistence.*;
+
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-//@AllArgsConstructor
 @Table(name = "transaction")
-public class Transaction {
+public class Transaction{
        @Id
-       @GeneratedValue(strategy = GenerationType.AUTO)
+       @GeneratedValue(strategy = GenerationType.IDENTITY)
        private int transactionId;
        private int amount;
        private String transactionType;
 
+       @JsonIgnore
        @ManyToOne
-       @JoinColumn(name = "acc_id")
+       @JoinColumn(name = "acc_id",nullable = false)
        private Accounts accounts;
-   
+
        @Override
        public String toString() {
         return "Transaction{" +
                 "amount=" + amount +
                 ", transactionType='" + transactionType + '\'' +
-//                ", accounts=" + accounts +
                 '}';
     }
 }
