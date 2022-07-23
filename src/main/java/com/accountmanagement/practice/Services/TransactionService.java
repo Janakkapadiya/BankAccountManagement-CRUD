@@ -30,21 +30,4 @@ public class TransactionService {
             throw new RuntimeException("Transaction not found");
         }
     }
-//    public void updateDepositTransaction(int amount,int id)
-//    {
-//        Accounts accounts = bankAccountService.findById(id);
-//        Transaction transaction = new Transaction();
-//        int newBalance = amount + accounts.getBalance();
-//        transaction.setAmount(newBalance);
-//        transactionRepository.save(transaction);
-//    }
-//    public void updateWithdrawTransaction(int amount,int id)
-//    {
-//        Accounts accounts = bankAccountService.findById(id);
-//        Transaction transaction = new Transaction();
-//        int newBalance = amount  - accounts.getBalance();
-//        transaction.setAmount(newBalance);
-//        transactionRepository.save(transaction);
-//    }
-
 }

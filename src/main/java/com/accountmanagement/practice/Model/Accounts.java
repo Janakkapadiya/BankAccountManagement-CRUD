@@ -1,5 +1,4 @@
 package com.accountmanagement.practice.Model;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,7 +34,7 @@ public class Accounts {
 		return transaction;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "accounts",fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "accounts", fetch = FetchType.LAZY)
 	private List<Transaction> transaction;
 
 	@Override

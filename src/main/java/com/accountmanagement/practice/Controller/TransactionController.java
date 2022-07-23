@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 public class TransactionController {
     private final TransactionService transactionService;
 
-    @PostMapping("/Transaction/{id}")
+    @PostMapping("/saveTransaction/{id}")
     public Transaction saveTransaction(@PathVariable("id") int id,@RequestBody TransactionDto dto)
     {
         return transactionService.saveTransaction(dto.getAmount(),dto.getTransactionType(),id);

@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.accountmanagement.practice.Exceptions.AccountNotFoundException;
 import com.accountmanagement.practice.Model.Accounts;
@@ -26,9 +25,9 @@ public List<Accounts> findAll()
  return bankAccountService.findAll();
 }
 @GetMapping("/search")
-public List<Accounts> findByName(@RequestParam("type") String type)
+public List<Accounts> findByName(@RequestParam("name") String name)
 {
- return bankAccountService.findByName(type);
+ return bankAccountService.findByName(name);
 }
 
  @GetMapping("/page")
@@ -46,7 +45,7 @@ public List<Accounts> findByName(@RequestParam("type") String type)
  {
      return new ResponseEntity<>(bankAccountService.addAccount(dto.getName(), dto.getAmount(), userId), HttpStatus.OK);
  }
- @PutMapping("/addMoney/{id}")
+ @PutMapping ("/addMoney/{id}")
  public void addMoney(@PathVariable("id") int id, @RequestBody @Valid DepositMoneyDto dto) throws AccountNotFoundException
  {
       bankAccountService.addMoney(id, dto.getAmount());
@@ -61,5 +60,4 @@ public List<Accounts> findByName(@RequestParam("type") String type)
  public int checkBalance(@PathVariable("id") int id) throws AccountNotFoundException {
       return bankAccountService.checkBalance(id);
  }
-
 }
