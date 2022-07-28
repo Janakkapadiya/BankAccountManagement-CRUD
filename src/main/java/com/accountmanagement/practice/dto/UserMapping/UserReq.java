@@ -16,4 +16,9 @@ public class UserReq {
     private String firstName;
     @NotBlank
     private String lastName;
+
+
+    private String userName;
+
+    private String password;
 }

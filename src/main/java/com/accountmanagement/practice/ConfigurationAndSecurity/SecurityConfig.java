@@ -1,61 +1,57 @@
 package com.accountmanagement.practice.ConfigurationAndSecurity;
+
+import com.accountmanagement.practice.Services.CustomAuthenticationManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
-public class SecurityConfig{
+public class SecurityConfig {
      @Autowired
-     @Lazy
-     private LoginFilter loginFilter;
+     private JwtAuthenticationEntrypoint authenticationEntrypoint;
 
      @Autowired
-     private JwsFilter jwsFilter;
-     //custom password storage
+     @Qualifier("userDetails")
+     private UserDetailsService userDetailsService;
+
+     @Autowired
+     private JwtFilter jwtFilter;
+
+     @Autowired
+     private PasswordEncoder passwordEncoder;
 
     @Bean
-    public UserDetailsService userDetailsService()
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
     {
-        var uds = new InMemoryUserDetailsManager();
-        uds.createUser(User.builder().username("user").password("{noop}user").roles("USER").build());
-        uds.createUser(User.builder().username("admin").password("{noop}admin").roles("ADMIN","USER").build());
-        return uds;
-    }
-
-    //login filter for user and password authentication
-
-    @Bean
-    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService)
-    {
-       var dao =  new DaoAuthenticationProvider();
-       dao.setUserDetailsService(userDetailsService);
-       return new ProviderManager(dao);
+        http.csrf().disable().authorizeHttpRequests()
+                .anyRequest().authenticated()
+                .and()
+                .exceptionHandling().
+                 authenticationEntryPoint(this.authenticationEntrypoint)
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.addFilterBefore(this.jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
     }
 
     @Bean
-    public SecurityFilterChain authFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf().disable();
-        httpSecurity.authorizeHttpRequests().anyRequest().authenticated();
-        httpSecurity.addFilterAt(loginFilter, BasicAuthenticationFilter.class);
-        httpSecurity.addFilterAt(jwsFilter,BasicAuthenticationFilter.class);
-        return httpSecurity.build();
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().antMatchers("/h2-console/**","/authenticate","/saveUser");
     }
-
-
-
+    @Bean
+    public AuthenticationManager configureAuthenticationManager() {
+        return CustomAuthenticationManager.builder().userDetailsService(userDetailsService).passwordEncoder(passwordEncoder).build();
+    }
 
 }
