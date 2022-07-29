@@ -25,7 +25,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private static final String AUTH_HEADER_PREFIX = "Bearer ";
 
     @Autowired
-    private JwtHelper jwtHelper;
+    private JwtUtil jwtUtil;
 
     @Autowired
     @Qualifier("userDetails")
@@ -41,7 +41,7 @@ public class JwtFilter extends OncePerRequestFilter {
         if (authorizationHeader != null && authorizationHeader.startsWith(AUTH_HEADER_PREFIX)) {
             jwtToken = authorizationHeader.substring(AUTH_HEADER_PREFIX.length());
             try {
-                username = jwtHelper.getUserNameFromToken(jwtToken);
+                username = jwtUtil.getUserNameFromToken(jwtToken);
             } catch (IllegalArgumentException e) {
                 logger.info("Unable to get Jwt token");
             } catch (ExpiredJwtException e) {
@@ -51,7 +51,7 @@ public class JwtFilter extends OncePerRequestFilter {
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                if (jwtHelper.validateToken(jwtToken, userDetails)) {
+                if (jwtUtil.validateToken(jwtToken, userDetails)) {
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                             new UsernamePasswordAuthenticationToken(
                                     userDetails,

@@ -14,10 +14,23 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @EnableWebSecurity
+@EnableWebMvc
 public class SecurityConfig {
+
+    public static final String[] ALLOWED_URLS = {
+            "/h2-console/**",
+            "/authenticate",
+            "/saveUser",
+            "/v3/api-docs",
+            "/v2/api-docs/**",
+            "/swagger-resources/**",
+            "/swagger-ui/**",
+            "/webjars/**",
+     };
      @Autowired
      private JwtAuthenticationEntrypoint authenticationEntrypoint;
 
@@ -47,7 +60,7 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().antMatchers("/h2-console/**","/authenticate","/saveUser");
+        return web -> web.ignoring().antMatchers(ALLOWED_URLS);
     }
     @Bean
     public AuthenticationManager configureAuthenticationManager() {

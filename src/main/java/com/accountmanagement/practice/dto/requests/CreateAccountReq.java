@@ -8,8 +8,6 @@ import javax.validation.constraints.Size;
 
 @Data
 public class CreateAccountReq {
-
-    private int id;
     @NotBlank
     @Size(min = 3 , message = "user should at least have 3 characters ")
     private String name;

@@ -1,6 +1,6 @@
 package com.accountmanagement.practice.Controller;
 
-import com.accountmanagement.practice.ConfigurationAndSecurity.JwtHelper;
+import com.accountmanagement.practice.ConfigurationAndSecurity.JwtUtil;
 import com.accountmanagement.practice.Services.CostumUserdetailService;
 import com.accountmanagement.practice.dto.TokenReq.Tokenreq;
 import com.accountmanagement.practice.dto.TokenRes.TokenRes;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
      @Autowired
-     private JwtHelper jwtHelper;
+     private JwtUtil jwtUtil;
      @Autowired
      private CostumUserdetailService costumUserdetailService;
      @Autowired
@@ -39,7 +39,7 @@ public class AuthController {
      }
          UserDetails userDetails = this.costumUserdetailService.loadUserByUsername(dto.getUsername());
 
-         String token = this.jwtHelper.generateToken(userDetails);
+         String token = this.jwtUtil.generateToken(userDetails);
          return ResponseEntity.ok(new TokenRes(token));
      }
 }
