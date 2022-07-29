@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Component
-public class JwtHelper {
+public class JwtUtil {
     private static final String SECRET_KEY = "8Um&fA&,(Y}VX8aT5nzg3?VDW$hP&cb)W+rQhT]U*)nJ,j,9F46BzH]r3c!nQ)HRB3Z4K@Pj%$$CbDgXq[6At&8CR_V:u7Q;WhX7}Lx/gyjBav6{$cFr&iDW_,BkzquBtUmFkt*3P3&HhgK)=XuEFR]u*D7X%%Q3a&cw?a+e4+tXwepcUw}Fc8Wa%vDnumi@UQ#!tATb";
     private static final int TOKEN_VALIDITY = 86400;
 

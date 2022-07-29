@@ -34,6 +34,7 @@ public class Accounts {
 		return transaction;
 	}
 
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "accounts", fetch = FetchType.LAZY)
 	private List<Transaction> transaction;
 
