@@ -18,6 +18,20 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    public static final String[] ALLOWED_URLS = {
+            "/h2-console/**",
+            "/authenticate",
+            "/saveUser",
+            "/v3/api-docs",
+            "/v2/api-docs/**",
+            "/swagger-resources/**",
+            "/swagger-ui/**",
+            "/webjars/**",
+            "/upload",
+            "/ApiData/**",
+            "/media/{fileName}"
+    };
      @Autowired
      private JwtAuthenticationEntrypoint authenticationEntrypoint;
 
@@ -47,7 +61,7 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().antMatchers("/h2-console/**","/authenticate","/saveUser");
+        return web -> web.ignoring().antMatchers(ALLOWED_URLS);
     }
     @Bean
     public AuthenticationManager configureAuthenticationManager() {
