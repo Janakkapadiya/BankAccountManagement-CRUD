@@ -30,6 +30,9 @@ public class SecurityConfig {
             "/swagger-resources/**",
             "/swagger-ui/**",
             "/webjars/**",
+            "/upload",
+            "/ApiData/**",
+            "/media/{fileName}"
      };
      @Autowired
      private JwtAuthenticationEntrypoint authenticationEntrypoint;

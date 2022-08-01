@@ -29,5 +29,4 @@ public class AccountManagementApplication {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-
 }
