@@ -1,22 +1,24 @@
 package com.accountmanagement.practice.Services;
 
 import com.accountmanagement.practice.Exceptions.AccountNotFoundException;
-import com.accountmanagement.practice.Exceptions.NotSufficientBalance;
+import com.accountmanagement.practice.Model.Account;
 import com.accountmanagement.practice.Model.FamilyAccount;
 import com.accountmanagement.practice.Model.Transaction;
 import com.accountmanagement.practice.Model.User;
+import com.accountmanagement.practice.Repository.AccountRepository;
 import com.accountmanagement.practice.Repository.FamilyAccountRepository;
 import com.accountmanagement.practice.Repository.TransactionRepository;
 import com.accountmanagement.practice.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
-@Component
-
-public class FamilyAccountsService {
+@Service
+public class FamilyAccountsService{
 
     @Autowired
     private FamilyAccountRepository familyAccountRepository;
@@ -24,8 +26,19 @@ public class FamilyAccountsService {
     private UserRepository userRepository;
 
     @Autowired
+    private BankAccountService bankAccountService;
+
+    @Autowired
     private TransactionRepository transactionRepository;
-    ;
+
+    @Autowired
+    private AccountRepository accountRepository;
+    @Autowired
+    private UserService userService;
+
+//    public FamilyAccountsService(AccountRepository accountrepository, UserService userService, TransactionRepository transactionRepository) {
+//        super(accountrepository, userService, transactionRepository);
+//    }
 
     public FamilyAccount findFamilyMemberId(int id) throws AccountNotFoundException {
         Optional<FamilyAccount> familyAccountOptional = familyAccountRepository.findById(id);
@@ -36,56 +49,47 @@ public class FamilyAccountsService {
         }
     }
 
-    public List<FamilyAccount> findAll() {
+    public List<FamilyAccount> findAllFamilyAccounts()
+    {
         return familyAccountRepository.findAll();
     }
 
-    public FamilyAccount addFamilyAccount(String name, int amount) {
-        List<User> users = userRepository.findAll();
+    public FamilyAccount addFamilyAccount(String name, int amount,int userId) {
+        Set<User> user = Collections.singleton(userService.getbyId(userId));
         FamilyAccount familyAccount = new FamilyAccount();
         familyAccount.setBalance(amount);
         familyAccount.setAccountType(name);
-        familyAccount.setUsers(users);
-        FamilyAccount familyAccountStore = familyAccountRepository.save(familyAccount);
-        return familyAccountStore;
+        familyAccount.setUsers(user);
+        return familyAccountRepository.save(familyAccount);
     }
 
-    public FamilyAccount addMoney(int id, int amount) throws RuntimeException {
-        FamilyAccount familyMemberId = this.findFamilyMemberId(id);
-        int newBalance = familyMemberId.getBalance() + amount;
-        familyMemberId.setBalance(newBalance);
-        familyAccountRepository.save(familyMemberId);
+    //manytomany
+    public FamilyAccount addUserToFamilyAccount(int id,int userId) {
+        Set<User> users = null;
+        FamilyAccount familyAccount = familyAccountRepository.findById(id).get();
+        User user = userRepository.findById(userId).get();
+        users = familyAccount.getUsers();
+            users.add(user);
+            familyAccount.setUsers(users);
+            return familyAccountRepository.save(familyAccount);
+    }
+
+    public void addMoneyToFamilyAccount(int id, int amount) throws RuntimeException {
+        FamilyAccount familyAccount = this.findFamilyMemberId(id);
+        Account account = bankAccountService.findById(id);
+        int newBalance = familyAccount.getBalance() + amount;
+        account.setBalance(newBalance);
+        accountRepository.save(account);
         Transaction transaction = new Transaction();
+        transaction.setAccount(account);
         transaction.setAmount(amount);
         transaction.setTransactionType("Deposited");
         transactionRepository.save(transaction);
-        return familyMemberId;
     }
 
-    public void withdraw(int id, int amount) throws AccountNotFoundException, NotSufficientBalance {
-        FamilyAccount familyMemberId = this.findFamilyMemberId(id);
-        int updatedBalance = familyMemberId.getBalance() - amount;
-        familyMemberId.setBalance(updatedBalance);
-        familyAccountRepository.save(familyMemberId);
-        Transaction transaction = new Transaction();
-        transaction.setAmount(amount);
-        transaction.setTransactionType("withdraw");
-        transactionRepository.save(transaction);
-    }
-
-    public void Deposit(int id, int amount) throws AccountNotFoundException, NotSufficientBalance {
-        FamilyAccount familyMemberId = this.findFamilyMemberId(id);
-        int updatedBalance = familyMemberId.getBalance() + amount;
-        familyMemberId.setBalance(updatedBalance);
-        familyAccountRepository.save(familyMemberId);
-        Transaction transaction = new Transaction();
-        transaction.setAmount(amount);
-        transaction.setTransactionType("deposited");
-        transactionRepository.save(transaction);
-    }
-
-    public int checkBalance(int id) throws AccountNotFoundException {
-        FamilyAccount familyMemberId = this.findFamilyMemberId(id);
-        return familyMemberId.getBalance();
-    }
+//    @Override
+//    @Id
+//    public void withdraw(int id, int amount) throws RuntimeException {
+//    super.withdraw(id, amount);
+//}
 }
