@@ -13,7 +13,7 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final BankAccountService bankAccountService;
     public Transaction saveTransaction(int amount, String transactionType,int id){
-        Accounts accounts = bankAccountService.findById(id);
+        Account account = bankAccountService.findById(id);
         Transaction transaction = new Transaction();
         transaction.setAmount(amount);
         transaction.setTransactionType(transactionType);
