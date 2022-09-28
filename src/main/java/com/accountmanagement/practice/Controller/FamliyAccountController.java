@@ -19,11 +19,6 @@ public class FamliyAccountController {
 
     @Autowired
     private FamilyAccountsService familyAccountsService;
-//    @Autowired
-//    private FamilyAccountRepository familyAccountRepository;
-//
-//    @Autowired
-//    private UserRepository userRepository;
 
     @GetMapping("/findAllFamliyAccounts")
     public List<FamilyAccount> findAllFamilyAccounts() {
@@ -60,10 +55,5 @@ public class FamliyAccountController {
             throw new IllegalArgumentException("make sure if its your account");
         }
     }
-//    @PutMapping("/WithdrawMoneyFromFamilyAccount/{id}")
-//    public void withdraw(@PathVariable("id") int id, @RequestBody DepositMoneyDto dto)
-//    {
-//        familyAccountsService.withdraw(id, dto.getAmount());
-//    }
 }
 
