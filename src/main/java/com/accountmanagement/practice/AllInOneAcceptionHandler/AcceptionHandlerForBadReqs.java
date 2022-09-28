@@ -12,11 +12,12 @@ import java.util.Map;
          @RestControllerAdvice
          public class AcceptionHandlerForBadReqs{
          @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String,String> handleInvalidArgs(MethodArgumentNotValidException ex)
-   {
-         Map<String,String> exception = new HashMap<>();
-         ex.getBindingResult().getFieldErrors().forEach(fieldError -> exception.put(fieldError.getField(), fieldError.getDefaultMessage()));
-         return exception;
-   }
+         @ExceptionHandler(MethodArgumentNotValidException.class)
+         
+              public Map<String,String> handleInvalidArgs(MethodArgumentNotValidException ex)
+              {
+                     Map<String,String> exception = new HashMap<>();
+                     ex.getBindingResult().getFieldErrors().forEach(fieldError -> exception.put(fieldError.getField(), fieldError.getDefaultMessage()));
+                     return exception;
+              }
   }
