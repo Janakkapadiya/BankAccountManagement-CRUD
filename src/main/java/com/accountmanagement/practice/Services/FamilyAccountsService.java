@@ -36,10 +36,6 @@ public class FamilyAccountsService{
     @Autowired
     private UserService userService;
 
-//    public FamilyAccountsService(AccountRepository accountrepository, UserService userService, TransactionRepository transactionRepository) {
-//        super(accountrepository, userService, transactionRepository);
-//    }
-
     public FamilyAccount findFamilyMemberId(int id) throws AccountNotFoundException {
         Optional<FamilyAccount> familyAccountOptional = familyAccountRepository.findById(id);
         if (familyAccountOptional.isPresent()) {
@@ -63,7 +59,6 @@ public class FamilyAccountsService{
         return familyAccountRepository.save(familyAccount);
     }
 
-    //manytomany
     public FamilyAccount addUserToFamilyAccount(int id,int userId) {
         Set<User> users = null;
         FamilyAccount familyAccount = familyAccountRepository.findById(id).get();
@@ -74,9 +69,16 @@ public class FamilyAccountsService{
             return familyAccountRepository.save(familyAccount);
     }
 
-    public void addMoneyToFamilyAccount(int id, int amount) throws RuntimeException {
+    public void addMoneyToFamilyAccount(int id, int amount) throws AccountNotFoundException {
         FamilyAccount familyAccount = this.findFamilyMemberId(id);
         Account account = bankAccountService.findById(id);
+        
+        User loggedInUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        FamilyAccount familyAccounts = familyAccountsService.findFamilyMemberId(id);
+        Set<User> users = familyAccounts.getUsers();
+        Optional<User> foundUser = users.stream().filter(user -> user.getUserId() == loggedInUser.getUserId()).findFirst();
+        
+        if(foundUser.isPresent()){
         int newBalance = familyAccount.getBalance() + amount;
         account.setBalance(newBalance);
         accountRepository.save(account);
@@ -85,11 +87,7 @@ public class FamilyAccountsService{
         transaction.setAmount(amount);
         transaction.setTransactionType("Deposited");
         transactionRepository.save(transaction);
+        }else{
+          throw new IllegalArgumentException("make sure if its your account");
     }
-
-//    @Override
-//    @Id
-//    public void withdraw(int id, int amount) throws RuntimeException {
-//    super.withdraw(id, amount);
-//}
 }
