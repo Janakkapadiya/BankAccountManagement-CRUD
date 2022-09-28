@@ -1,4 +1,4 @@
-package com.accountmanagement.practice.controller.allInOneAcceptionHandler;
+package com.accountmanagement.practice.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
