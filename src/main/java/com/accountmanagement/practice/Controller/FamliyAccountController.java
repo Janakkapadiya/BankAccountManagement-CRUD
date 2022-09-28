@@ -45,15 +45,7 @@ public class FamliyAccountController {
     @PutMapping("/addMoneyFamilyAccount/{id}")
     public void addMoney(@PathVariable("id") int id, @RequestBody DepositMoneyDto dto)
     {
-        User loggedInUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        FamilyAccount familyAccounts = familyAccountsService.findFamilyMemberId(id);
-        Set<User> users =  familyAccounts.getUsers();
-        Optional<User> foundUser = users.stream().filter(user -> user.getUserId() == loggedInUser.getUserId()).findFirst();
-        if(foundUser.isPresent()) {
-            familyAccountsService.addMoneyToFamilyAccount(id, dto.getAmount());
-        }else{
-            throw new IllegalArgumentException("make sure if its your account");
-        }
+        familyAccountsService.addMoneyToFamilyAccount(id, dto.getAmount());
     }
 }
 
